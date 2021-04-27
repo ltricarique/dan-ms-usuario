@@ -29,7 +29,7 @@ public class SpringFoxConfig {
 //    public Docket api() { 
 //        return new Docket(DocumentationType.SWAGGER_2)  
 //          .select()                                  
-//          .apis(RequestHandlerSelectors.basePackage("ar.edu.utn.frsf.isi.dan.usuario.controller"))              
+//          .apis(RequestHandlerSelectors.basePackage("ar.edu.utn.frsf.isi.dan.usuario.rest"))              
 //          .paths(PathSelectors.any())                          
 //          .build();                                         
 //    }

@@ -1,8 +1,9 @@
-package ar.edu.utn.frsf.isi.dan.usuario.controller;
+package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +30,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(Api.OBRA_BASE_PATH)
-@Tag(name = "ObraController", description = "Permite gestionar las obras de los clientes de la empresa.")
-public class ObraController {
+@Tag(name = "ObraRest", description = "Permite gestionar las obras de los clientes de la empresa.")
+public class ObraRest {
 	private static final List<Obra> OBRAS = new ArrayList<>();
 	private static Integer SEQUENCE = 1;
 
@@ -51,7 +53,7 @@ public class ObraController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Obra inexistente") })
-	public ResponseEntity<Obra> actualizar(@RequestBody Obra obra, @PathVariable Integer id) {
+	public ResponseEntity<Obra> actualizar(@RequestBody Obra obra, @Parameter(description = "Id de la obra a actualizar") @PathVariable Integer id) {
 		int index = OBRAS.indexOf(obra);
 
 		if (index >= 0) {
@@ -67,7 +69,7 @@ public class ObraController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Obra inexistente") })
-	public ResponseEntity<Obra> eliminar(@PathVariable Integer id) {
+	public ResponseEntity<Obra> eliminar(@Parameter(description = "Id de la obra a eliminar") @PathVariable Integer id) {
 		Optional<Obra> obra = OBRAS.stream().filter(c -> c.getId().equals(id)).findFirst();
 		
 		if (obra.isPresent()) {
@@ -83,7 +85,7 @@ public class ObraController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Obra inexistente") })
-	public ResponseEntity<Obra> obtenerPorId(@PathVariable Integer id) {
+	public ResponseEntity<Obra> obtenerPorId(@Parameter(description = "Id de la obra a retornar") @PathVariable Integer id) {
 		Optional<Obra> obra = OBRAS.stream().filter(c -> c.getId().equals(id)).findFirst();
 
 		return ResponseEntity.of(obra);
@@ -95,14 +97,13 @@ public class ObraController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Obras inexistentes") })
-	public ResponseEntity<List<Obra>> obtenerPorClienteObra(@RequestParam(required = false) String razonSocialCliente, @RequestParam(required = false) String tipoObra) {
-//		if (razonSocialCliente != null)
-//			ClienteController.CLIENTES.stream().filter(c -> c.getRazonSocial().equalsIgnoreCase(razonSocialCliente))
-//		Optional<Obra> empleado = OBRAS.stream().filter(c -> c.getNombre().equalsIgnoreCase(nombre))
-//				.findFirst();
-//
-//		return ResponseEntity.of(empleado);
-		return null;
+	public ResponseEntity<List<Obra>> obtenerPorClienteObra(@Parameter(description = "Razón social del cliente") @RequestParam(required = false) String razonSocialCliente, @Parameter(description = "Tipo de obra") @RequestParam(required = false) String tipoObra) {
+		List<Obra> obras = OBRAS.stream().filter(o -> o.getCliente().getRazonSocial().equalsIgnoreCase(razonSocialCliente) | o.getTipo().getTipo().equalsIgnoreCase(tipoObra)).collect(Collectors.toList());
+
+		if (obras != null && obras.size() > 0)
+			return ResponseEntity.ok(obras);
+		else
+			return ResponseEntity.notFound().build();
 	}
 
 }

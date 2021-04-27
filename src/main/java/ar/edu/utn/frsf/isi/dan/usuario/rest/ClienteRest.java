@@ -1,4 +1,4 @@
-package ar.edu.utn.frsf.isi.dan.usuario.controller;
+package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Cliente;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +28,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(Api.CLIENTE_BASE_PATH)
-@Tag(name = "ClienteController", description = "Permite gestionar los clientes de la empresa.")
-public class ClienteController {
+@Tag(name = "ClienteRest", description = "Permite gestionar los clientes de la empresa.")
+public class ClienteRest {
 	private static final List<Cliente> CLIENTES = new ArrayList<>();
 //	private static Integer SEQUENCE = 1;
 
@@ -38,7 +39,7 @@ public class ClienteController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
-	public ResponseEntity<Cliente> obtenerPorCuit(@PathVariable String cuit) {
+	public ResponseEntity<Cliente> obtenerPorCuit(@Parameter(description = "Cuit del cliente a retornar") @PathVariable String cuit) {
 		Optional<Cliente> cliente = CLIENTES.stream().filter(c -> c.getCuit().equals(cuit)).findFirst();
 
 		return ResponseEntity.of(cliente);
@@ -50,7 +51,7 @@ public class ClienteController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
-	public ResponseEntity<Cliente> obtenerPorRazonSocial(@RequestParam(required = false) String razonSocial) {
+	public ResponseEntity<Cliente> obtenerPorRazonSocial(@Parameter(description = "Razón social del cliente a retornar") @RequestParam(required = false) String razonSocial) {
 		Optional<Cliente> cliente = CLIENTES.stream().filter(c -> c.getRazonSocial().equalsIgnoreCase(razonSocial))
 				.findFirst();
 
@@ -75,7 +76,7 @@ public class ClienteController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
-	public ResponseEntity<Cliente> actualizar(@RequestBody Cliente cliente, @PathVariable Integer id) {
+	public ResponseEntity<Cliente> actualizar(@Parameter(description = "Id del cliente a retornar") @RequestBody Cliente cliente, @PathVariable Integer id) {
 		int index = CLIENTES.indexOf(cliente);
 
 		if (index >= 0) {

@@ -1,4 +1,4 @@
-package ar.edu.utn.frsf.isi.dan.usuario.controller;
+package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
 /**
  * @author Leandro Heraldo Tricarique

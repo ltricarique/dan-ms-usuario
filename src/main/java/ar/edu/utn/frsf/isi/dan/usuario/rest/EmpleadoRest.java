@@ -1,4 +1,4 @@
-package ar.edu.utn.frsf.isi.dan.usuario.controller;
+package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Empleado;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +29,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping(Api.EMPLEADO_BASE_PATH)
-@Tag(name = "EmpleadoController", description = "Permite gestionar los empleados de la empresa.")
-public class EmpleadoController {
+@Tag(name = "EmpleadoRest", description = "Permite gestionar los empleados de la empresa.")
+public class EmpleadoRest {
 	private static final List<Empleado> EMPLEADOS = new ArrayList<>();
 	private static Integer SEQUENCE = 1;
 
@@ -51,7 +52,7 @@ public class EmpleadoController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> actualizar(@RequestBody Empleado empleado, @PathVariable Integer id) {
+	public ResponseEntity<Empleado> actualizar(@RequestBody Empleado empleado, @Parameter(description = "Id del empleado a actualizar") @PathVariable Integer id) {
 		int index = EMPLEADOS.indexOf(empleado);
 
 		if (index >= 0) {
@@ -67,7 +68,7 @@ public class EmpleadoController {
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> eliminar(@PathVariable Integer id) {
+	public ResponseEntity<Empleado> eliminar(@Parameter(description = "Id del empleado a eliminar") @PathVariable Integer id) {
 		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getId().equals(id)).findFirst();
 		
 		if (empleado.isPresent()) {
@@ -79,24 +80,24 @@ public class EmpleadoController {
 	}
 
 	@GetMapping(path = Api.EMPLEADO_GET_ID_PATH)
-	@Operation(summary = "Retorna un empleado por ID.")
+	@Operation(summary = "Retorna un empleado por su id.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado recuperado"),
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> obtenerPorId(@PathVariable Integer id) {
+	public ResponseEntity<Empleado> obtenerPorId(@Parameter(description = "Id del empleado a retornar") @PathVariable Integer id) {
 		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getId().equals(id)).findFirst();
 
 		return ResponseEntity.of(empleado);
 	}
 
 	@GetMapping
-	@Operation(summary = "Retorna un empleado por nombre.")
+	@Operation(summary = "Retorna un empleado por su nombre.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado recuperado"),
 			@ApiResponse(responseCode = "401", description = "No autorizado"),
 			@ApiResponse(responseCode = "403", description = "Prohibido"),
 			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> obtenerPorNombre(@RequestParam(required = false) String nombre) {
+	public ResponseEntity<Empleado> obtenerPorNombre(@Parameter(description = "Nombre del empleado a retornar") @RequestParam(required = false) String nombre) {
 		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getNombre().equalsIgnoreCase(nombre))
 				.findFirst();
 
