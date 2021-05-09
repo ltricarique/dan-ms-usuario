@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.isi.dan.usuario.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * @author Leandro Heraldo Tricarique
@@ -81,11 +82,20 @@ public class Obra {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Obra)
-			return ((Obra) obj).getId().equals(id);
-		else
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Obra other = (Obra) obj;
+		return Objects.equals(id, other.id);
 	}
 
 	@Override

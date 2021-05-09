@@ -5,22 +5,22 @@ package ar.edu.utn.frsf.isi.dan.usuario.rest;
  *
  */
 interface Api {
-	public static String BASE_PATH = "/api/v1";
+	String BASE_PATH = "/api/v1";
 	
-	public static String CLIENTE_BASE_PATH = BASE_PATH + "/cliente";
-	public static String CLIENTE_GET_CUIT_PATH = "/{cuit}";
-	public static String CLIENTE_GET_ALL_PATH = "/listar";
-	public static String CLIENTE_PUT_ID_PATH = "/{id}";
+	String CLIENTE_BASE_PATH = BASE_PATH + "/cliente";
+	String CLIENTE_GET_CUIT_PATH = "/{cuit}";
+	String CLIENTE_GET_ALL_PATH = "/listar";
+	String CLIENTE_PUT_ID_PATH = "/{id}";
 	
-	public static String EMPLEADO_BASE_PATH = BASE_PATH + "/empleado";
-	public static String EMPLEADO_GET_ID_PATH = "/{id}";
-	public static String EMPLEADO_GET_ALL_PATH = "/listar";
-	public static String EMPLEADO_PUT_ID_PATH = "/{id}";
-	public static String EMPLEADO_DELETE_ID_PATH = "/{id}";
+	String EMPLEADO_BASE_PATH = BASE_PATH + "/empleado";
+	String EMPLEADO_GET_ID_PATH = "/{id}";
+	String EMPLEADO_GET_ALL_PATH = "/listar";
+	String EMPLEADO_PUT_ID_PATH = "/{id}";
+	String EMPLEADO_DELETE_ID_PATH = "/{id}";
 	
-	public static String OBRA_BASE_PATH = BASE_PATH + "/obra";
-	public static String OBRA_GET_ID_PATH = "/{id}";
-	public static String OBRA_GET_ALL_PATH = "/listar";
-	public static String OBRA_PUT_ID_PATH = "/{id}";
-	public static String OBRA_DELETE_ID_PATH = "/{id}";
+	String OBRA_BASE_PATH = BASE_PATH + "/obra";
+	String OBRA_GET_ID_PATH = "/{id}";
+	String OBRA_GET_ALL_PATH = "/listar";
+	String OBRA_PUT_ID_PATH = "/{id}";
+	String OBRA_DELETE_ID_PATH = "/{id}";
 }
