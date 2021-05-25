@@ -2,55 +2,99 @@ package ar.edu.utn.frsf.isi.dan.usuario.model;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * @author Leandro Heraldo Tricarique
  *
  */
-public class Empleado {
-	private Integer id;
+@Entity
+@Table(name = "EMPLEADO", schema = "MS_USUARIO")
+public class Empleado
+{
+	@Id
+	@SequenceGenerator(name = "empleadoGenerator", sequenceName = "SECUENCIA_EMPLEADO", schema = "MS_USUARIO", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empleadoGenerator")
+	@Column(name = "ID")
+	private Long id;
+	@Column(name = "NOMBRE")
 	private String nombre;
-	private String mail;
+	@Column(name = "APELLIDO")
+	private String apellido;
+	@Column(name = "EMAIL")
+	private String email;
+	@OneToOne
+	@JoinColumn(name = "ID_USUARIO", foreignKey = @ForeignKey(name = "FK_EMPLEADO_ID_USUARIO_TO_USUARIO_ID"))
 	private Usuario usuario;
-	
-	public Integer getId() {
+
+	public Long getId()
+	{
 		return id;
 	}
-	
-	public void setId(Integer id) {
+
+	public void setId(Long id)
+	{
 		this.id = id;
 	}
-	
-	public String getNombre() {
+
+	public String getNombre()
+	{
 		return nombre;
 	}
 
-	public void setNombre(String nombre) {
+	public void setNombre(String nombre)
+	{
 		this.nombre = nombre;
 	}
-	
-	public String getMail() {
-		return mail;
+
+	public String getApellido()
+	{
+		return apellido;
 	}
-	
-	public void setMail(String mail) {
-		this.mail = mail;
+
+	public void setApellido(String apellido)
+	{
+		this.apellido = apellido;
 	}
-	
-	public Usuario getUsuario() {
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String mail)
+	{
+		this.email = mail;
+	}
+
+	public Usuario getUsuario()
+	{
 		return usuario;
 	}
-	
-	public void setUsuario(Usuario usuario) {
+
+	public void setUsuario(Usuario usuario)
+	{
 		this.usuario = usuario;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return Objects.hash(id);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -62,8 +106,9 @@ public class Empleado {
 	}
 
 	@Override
-	public String toString() {
-		return "Empleado [id=" + id + ", nombre=" + nombre + ", mail=" + mail + ", usuario=" + usuario + "]";
+	public String toString()
+	{
+		return "Empleado [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", email=" + email + ", usuario=" + usuario + "]";
 	}
-	
+
 }

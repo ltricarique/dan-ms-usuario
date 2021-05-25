@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.utn.frsf.isi.dan.usuario.model.Empleado;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,16 +29,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(Api.EMPLEADO_BASE_PATH)
 @Tag(name = "EmpleadoRest", description = "Permite gestionar los empleados de la empresa.")
-public class EmpleadoRest {
+public class EmpleadoRest
+{
 	private static final List<Empleado> EMPLEADOS = new ArrayList<>();
-	private static Integer SEQUENCE = 1;
+	private static Long SEQUENCE = 1L;
 
 	@PostMapping
 	@Operation(summary = "Registra un nuevo empleado.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado registrado correctamente"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"), })
-	public ResponseEntity<Empleado> crear(@RequestBody Empleado empleado) {
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"), })
+	public ResponseEntity<Empleado> crear(@RequestBody Empleado empleado)
+	{
 		empleado.setId(SEQUENCE++);
 		EMPLEADOS.add(empleado);
 
@@ -49,29 +49,33 @@ public class EmpleadoRest {
 	@PutMapping(value = Api.EMPLEADO_PUT_ID_PATH)
 	@Operation(summary = "Actualiza un empleado.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado actualizado"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"),
-			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> actualizar(@RequestBody Empleado empleado, @Parameter(description = "Id del empleado a actualizar") @PathVariable Integer id) {
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
+	public ResponseEntity<Empleado> actualizar(@RequestBody Empleado empleado,
+		@Parameter(description = "Id del empleado a actualizar") @PathVariable Integer id)
+	{
 		int index = EMPLEADOS.indexOf(empleado);
 
-		if (index >= 0) {
+		if (index >= 0)
+		{
 			EMPLEADOS.set(index, empleado);
 			return ResponseEntity.ok(empleado);
-		} else
+		}
+		else
 			return ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping(value = Api.EMPLEADO_DELETE_ID_PATH)
 	@Operation(summary = "Elimina un empleado.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado eliminado"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"),
-			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> eliminar(@Parameter(description = "Id del empleado a eliminar") @PathVariable Integer id) {
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
+	public ResponseEntity<Empleado> eliminar(@Parameter(description = "Id del empleado a eliminar") @PathVariable Long id)
+	{
 		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getId().equals(id)).findFirst();
-		
-		if (empleado.isPresent()) {
+
+		if (empleado.isPresent())
+		{
 			EMPLEADOS.remove(empleado.get());
 			return ResponseEntity.of(empleado);
 		}
@@ -82,10 +86,10 @@ public class EmpleadoRest {
 	@GetMapping(path = Api.EMPLEADO_GET_ID_PATH)
 	@Operation(summary = "Retorna un empleado por su id.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado recuperado"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"),
-			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> obtenerPorId(@Parameter(description = "Id del empleado a retornar") @PathVariable Integer id) {
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
+	public ResponseEntity<Empleado> obtenerPorId(@Parameter(description = "Id del empleado a retornar") @PathVariable Long id)
+	{
 		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getId().equals(id)).findFirst();
 
 		return ResponseEntity.of(empleado);
@@ -94,12 +98,12 @@ public class EmpleadoRest {
 	@GetMapping
 	@Operation(summary = "Retorna un empleado por su nombre.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado recuperado"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"),
-			@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
-	public ResponseEntity<Empleado> obtenerPorNombre(@Parameter(description = "Nombre del empleado a retornar") @RequestParam(required = false) String nombre) {
-		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getNombre().equalsIgnoreCase(nombre))
-				.findFirst();
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Empleado inexistente") })
+	public ResponseEntity<Empleado> obtenerPorNombre(
+		@Parameter(description = "Nombre del empleado a retornar") @RequestParam(required = false) String nombre)
+	{
+		Optional<Empleado> empleado = EMPLEADOS.stream().filter(c -> c.getNombre().equalsIgnoreCase(nombre)).findFirst();
 
 		return ResponseEntity.of(empleado);
 	}
@@ -107,10 +111,10 @@ public class EmpleadoRest {
 	@GetMapping(path = Api.EMPLEADO_GET_ALL_PATH)
 	@Operation(summary = "Retorna todos los empleados registrados.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleados recuperados"),
-			@ApiResponse(responseCode = "401", description = "No autorizado"),
-			@ApiResponse(responseCode = "403", description = "Prohibido"),
-			@ApiResponse(responseCode = "404", description = "No existen empleados registrados") })
-	public ResponseEntity<List<Empleado>> listar() {
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "No existen empleados registrados") })
+	public ResponseEntity<List<Empleado>> listar()
+	{
 		if (!EMPLEADOS.isEmpty())
 			return ResponseEntity.ok(EMPLEADOS);
 		else

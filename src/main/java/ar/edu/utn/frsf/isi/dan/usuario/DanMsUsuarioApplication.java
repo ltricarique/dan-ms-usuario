@@ -8,9 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class DanMsUsuarioApplication {
+public class DanMsUsuarioApplication
+{
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		SpringApplication.run(DanMsUsuarioApplication.class, args);
 	}
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<property name="FILE_URL" value="logs" />
+	
+	<!-- https://www.mkyong.com/logging/how-to-stop-logback-status-info-at-the-start-of-every-log/ -->
+	<!-- Stop output INFO at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<encoder>
+			<!-- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
+			<!-- <pattern>%d{HH:mm:ss.SSS} %thread %level %logger{50} %msg%n</pattern> -->
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %-50logger{49} : %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		<encoder>
+			<!-- <pattern>[%5p] [%t %d{hh:mm:ss}] (%F:%M:%L) %msg%n</pattern> -->
+			<!-- <pattern>[%thread] %-5level %logger{36} - %msg%n</pattern> -->
+			<!-- DONT USE THIS FORMATTER FOR LIVE LOGGING THE %file : %line OUTPUTTER IS SLOW -->
+			<!-- <pattern>%date %level [%thread] %logger{50} [%file : %line] %msg%n</pattern> -->
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %-50logger{49} : %msg%n</pattern>
+		</encoder>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			 <!-- rollover daily -->
+			<fileNamePattern>${FILE_URL}/log-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+
+	</appender>
+
+
+	<logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
