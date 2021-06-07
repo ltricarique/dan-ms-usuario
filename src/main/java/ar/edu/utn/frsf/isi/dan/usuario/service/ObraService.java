@@ -8,9 +8,11 @@ public interface ObraService
 {
 	Obra guardarObra(Obra obra, Long idCliente);
 
-	Obra actualizarObra(Obra obra, Long id);
+	Obra actualizarObra(Obra obra, Long idObra, Long idCliente);
 
 	List<Obra> obtenerObrasCliente(Long idCliente, Long idTipoObra);
 
 	Obra obtenerObraPorId(Long id);
+
+	Boolean eliminarObra(Long id);
 }

@@ -25,7 +25,7 @@ interface Api
 	String OBRA_GET_ID_PATH = "/{id}";
 	String OBRA_GET_CLIENTE_PATH = "/cliente/{id}";
 	String OBRA_GET_ALL_PATH = "/listar";
-	String OBRA_POST_ID_PATH = "/{id}";
-	String OBRA_PUT_ID_PATH = "/{id}";
+	String OBRA_POST_ID_PATH = "/{idCliente}";
+	String OBRA_PUT_ID_PATH = "/{idObra}/cliente/{idCliente}";
 	String OBRA_DELETE_ID_PATH = "/{id}";
 }

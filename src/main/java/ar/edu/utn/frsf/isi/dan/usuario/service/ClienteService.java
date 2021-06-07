@@ -10,7 +10,7 @@ public interface ClienteService
 
 	Cliente actualizarCliente(Cliente cliente, Long id);
 
-	Cliente bajaCliente(Long id);
+	Boolean bajaCliente(Long id);
 
 	List<Cliente> listarClientes();
 

@@ -16,13 +16,15 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>
 
 	List<Cliente> findByCuitContainingAndFechaBajaIsNull(String cuit);
 
-	List<Cliente> findByFechaBajaIsNull();
+	List<Cliente> findByFechaBajaIsNullOrderByRazonSocial();
 
 	Optional<Cliente> findByIdAndFechaBajaIsNull(Long id);
 
-	@Query("SELECT o.cliente FROM Obra o WHERE o.id = :id AND o.cliente.fechaBaja IS NULL")
-	Optional<Cliente> findByObraAndFechaBajaIsNull(Long id);
+	@Query("select o.cliente from Obra o where o.id = :idObra and o.cliente.fechaBaja is null")
+	Optional<Cliente> findByObraAndFechaBajaIsNull(Long idObra);
 
-	@Query("SELECT COUNT(c) > 0 FROM Cliente c WHERE c.id = :id AND fechaBaja IS NULL")
-	boolean existsById(Long id);
+	boolean existsByIdAndFechaBajaIsNull(Long id);
+
+	@Query(value = "select count(*) = 0 from ms_pedido.pedido p, ms_usuario.obra o where p.id_obra = o.id and o.id_cliente = :id", nativeQuery = true)
+	boolean canDelete(Long id);
 }

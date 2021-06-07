@@ -46,13 +46,13 @@ public class Cliente
 	private BigDecimal maximoCuentaCorriente;
 	@Column(name = "HABILITADO_ONLINE")
 	private Boolean habilitadoOnline;
-	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE })
 	@JoinColumn(name = "ID_USUARIO", foreignKey = @ForeignKey(name = "FK_CLIENTE_ID_USUARIO_TO_USUARIO_ID"))
 	@NotNull
 	private Usuario usuario;
 	@Column(name = "FECHA_BAJA")
 	private Instant fechaBaja;
-	@OneToMany(mappedBy = "cliente", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	@OneToMany(mappedBy = "cliente", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE })
 	private List<Obra> obras;
 
 	public Long getId()

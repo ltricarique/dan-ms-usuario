@@ -2,10 +2,13 @@ package ar.edu.utn.frsf.isi.dan.usuario.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.edu.utn.frsf.isi.dan.usuario.exception.ArgumentoIlegalException;
+import ar.edu.utn.frsf.isi.dan.usuario.exception.OperacionNoPermitidaException;
 import ar.edu.utn.frsf.isi.dan.usuario.exception.RecursoNoEncontradoException;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Cliente;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
@@ -16,6 +19,8 @@ import ar.edu.utn.frsf.isi.dan.usuario.service.ObraService;
 @Service
 public class ObraServiceImpl implements ObraService
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ObraServiceImpl.class);
+
 	@Autowired
 	private ObraRepository obraRepository;
 
@@ -25,62 +30,77 @@ public class ObraServiceImpl implements ObraService
 	@Override
 	public Obra guardarObra(Obra obra, Long idCliente)
 	{
-		if (obra != null)
-		{
-			Cliente cliente = clienteService.obtenerClientePorId(idCliente);
+		if (obra == null)
+			throw new ArgumentoIlegalException("Obra no suministrada.");
 
-			obra.setCliente(cliente);;
-			System.out.println("-- OBRA -> guardarObra()");
-			return obraRepository.save(obra);
-		}
-		else
-		{
-			throw new ArgumentoIlegalException("Datos de la obra no suministrado.");
-		}
+		Cliente cliente = clienteService.obtenerClientePorId(idCliente);
+
+		obra.setCliente(cliente);
+
+		obra = obraRepository.save(obra);
+		LOGGER.info("Obra guardada");
+
+		return obra;
 	}
 
 	@Override
-	public Obra actualizarObra(Obra obra, Long id)
+	public Obra actualizarObra(Obra obra, Long idObra, Long idCliente)
 	{
-		if (obra != null)
-		{
-			if (obraRepository.existsById(id))
-			{
-				obra.setId(id);
-				System.out.println("-- OBRA -> actualizarObra()");
-				return obraRepository.save(obra);
-			}
-			else
-			{
-				throw new RecursoNoEncontradoException("No existe obra.");
-			}
-		}
-		else
-		{
-			throw new ArgumentoIlegalException("Datos de la obra no suministrado.");
-		}
+		if (obra == null)
+			throw new ArgumentoIlegalException("Obra no suministrada.");
+
+		if (!obraRepository.existsById(idObra))
+			throw new RecursoNoEncontradoException("No existe obra.");
+
+		if (!clienteService.existeCliente(idCliente))
+			throw new RecursoNoEncontradoException("No existe cliente.");
+
+		if (!obraRepository.existsByIdObraAndIdCliente(idObra, idCliente))
+			throw new ArgumentoIlegalException("La obra no pertenece al cliente.");
+
+		Cliente cliente = clienteService.obtenerClientePorId(idCliente);
+
+		obra.setId(idObra);
+		obra.setCliente(cliente);
+
+		obra = obraRepository.save(obra);
+		LOGGER.info("Obra actualizada");
+
+		return obra;
 	}
 
 	@Override
 	public List<Obra> obtenerObrasCliente(Long idCliente, Long idTipoObra)
 	{
-		if (clienteService.existeCliente(idCliente))
-		{
-			if (idTipoObra == null)
-				return obraRepository.findByCliente(idCliente);
-			else
-				return obraRepository.findByClienteAndTipo(idCliente, idTipoObra);
-		}
-		else
-		{
+		if (!clienteService.existeCliente(idCliente))
 			throw new RecursoNoEncontradoException("No existe cliente.");
-		}
+
+		if (idTipoObra == null)
+			return obraRepository.findByCliente(idCliente);
+		else
+			return obraRepository.findByClienteAndTipo(idCliente, idTipoObra);
 	}
 
 	@Override
 	public Obra obtenerObraPorId(Long id)
 	{
 		return obraRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No existe obra."));
+	}
+
+	@Override
+	public Boolean eliminarObra(Long id)
+	{
+		if (!obraRepository.existsById(id))
+			throw new RecursoNoEncontradoException("No existe obra.");
+
+		if (!obraRepository.canDelete(id))
+			throw new OperacionNoPermitidaException("No es posible eliminar la obra.");
+
+		obraRepository.deleteById(id);
+
+		LOGGER.info("Obra eliminada");
+
+		return true;
 	}
 
 }

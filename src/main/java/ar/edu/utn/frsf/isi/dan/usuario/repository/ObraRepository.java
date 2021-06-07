@@ -11,11 +11,15 @@ import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
 @Repository
 public interface ObraRepository extends JpaRepository<Obra, Long>
 {
-	@Query("SELECT o FROM Obra o WHERE o.cliente.id = :idCliente AND o.cliente.fechaBaja IS NULL")
+	@Query("select o from Obra o where o.cliente.id = :idCliente and o.cliente.fechaBaja is null")
 	List<Obra> findByCliente(Long idCliente);
-	//	List<Obra> findByCliente_IdAndCliente_ObrasIsNotNull(Long idCliente);
 
-	@Query("SELECT o FROM Obra o WHERE o.cliente.id = :idCliente AND o.cliente.fechaBaja IS NULL AND o.tipo.id = :idTipoObra")
+	@Query("select o from Obra o where o.cliente.id = :idCliente and o.cliente.fechaBaja is null and o.tipo.id = :idTipoObra")
 	List<Obra> findByClienteAndTipo(Long idCliente, Long idTipoObra);
 
+	@Query("select count(o) > 0 from Obra o where o.id = :idObra and o.cliente.id = :idCliente")
+	boolean existsByIdObraAndIdCliente(Long idObra, Long idCliente);
+
+	@Query(value = "select count(*) = 0 from ms_pedido.pedido p, ms_usuario.obra o where p.id_obra = o.id and o.id = :id", nativeQuery = true)
+	boolean canDelete(Long id);
 }

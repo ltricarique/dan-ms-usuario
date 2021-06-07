@@ -1,0 +1,1067 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.2
+-- Dumped by pg_dump version 13.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: ms_material; Type: SCHEMA; Schema: -; Owner: dan_ms_user
+--
+
+CREATE SCHEMA ms_material;
+
+
+ALTER SCHEMA ms_material OWNER TO dan_ms_user;
+
+--
+-- Name: ms_pago; Type: SCHEMA; Schema: -; Owner: dan_ms_user
+--
+
+CREATE SCHEMA ms_pago;
+
+
+ALTER SCHEMA ms_pago OWNER TO dan_ms_user;
+
+--
+-- Name: ms_pedido; Type: SCHEMA; Schema: -; Owner: dan_ms_user
+--
+
+CREATE SCHEMA ms_pedido;
+
+
+ALTER SCHEMA ms_pedido OWNER TO dan_ms_user;
+
+--
+-- Name: ms_usuario; Type: SCHEMA; Schema: -; Owner: dan_ms_user
+--
+
+CREATE SCHEMA ms_usuario;
+
+
+ALTER SCHEMA ms_usuario OWNER TO dan_ms_user;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: detalle_provision; Type: TABLE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_material.detalle_provision (
+    id integer NOT NULL,
+    cantidad numeric(19,2),
+    id_material bigint,
+    id_provision bigint
+);
+
+
+ALTER TABLE ms_material.detalle_provision OWNER TO dan_ms_user;
+
+--
+-- Name: material; Type: TABLE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_material.material (
+    id bigint NOT NULL,
+    cantidad_minima numeric(19,2),
+    descripcion character varying(255),
+    descuento_cantidad numeric(19,2),
+    nombre character varying(255),
+    precio_unitario numeric(19,2),
+    stock_actual numeric(19,2),
+    stock_minimo numeric(19,2),
+    id_unidad bigint
+);
+
+
+ALTER TABLE ms_material.material OWNER TO dan_ms_user;
+
+--
+-- Name: movimiento_stock; Type: TABLE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_material.movimiento_stock (
+    id bigint NOT NULL,
+    cantidad_entrada numeric(19,2),
+    cantidad_salida numeric(19,2),
+    fecha timestamp without time zone,
+    id_detalle_pedido bigint,
+    id_detalle_provision integer,
+    id_material bigint
+);
+
+
+ALTER TABLE ms_material.movimiento_stock OWNER TO dan_ms_user;
+
+--
+-- Name: provision; Type: TABLE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_material.provision (
+    id bigint NOT NULL,
+    fecha_provision timestamp without time zone
+);
+
+
+ALTER TABLE ms_material.provision OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_detalle_provision; Type: SEQUENCE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_material.secuencia_detalle_provision
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_material.secuencia_detalle_provision OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_material; Type: SEQUENCE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_material.secuencia_material
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_material.secuencia_material OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_movimiento_stock; Type: SEQUENCE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_material.secuencia_movimiento_stock
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_material.secuencia_movimiento_stock OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_provision; Type: SEQUENCE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_material.secuencia_provision
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_material.secuencia_provision OWNER TO dan_ms_user;
+
+--
+-- Name: unidad; Type: TABLE; Schema: ms_material; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_material.unidad (
+    id bigint NOT NULL,
+    descripcion character varying(255)
+);
+
+
+ALTER TABLE ms_material.unidad OWNER TO dan_ms_user;
+
+--
+-- Name: cheque; Type: TABLE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pago.cheque (
+    banco character varying(255),
+    fecha_cobro timestamp without time zone,
+    numero_cheque integer,
+    id bigint NOT NULL
+);
+
+
+ALTER TABLE ms_pago.cheque OWNER TO dan_ms_user;
+
+--
+-- Name: efectivo; Type: TABLE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pago.efectivo (
+    numero_recibo integer,
+    id bigint NOT NULL
+);
+
+
+ALTER TABLE ms_pago.efectivo OWNER TO dan_ms_user;
+
+--
+-- Name: medio_pago; Type: TABLE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pago.medio_pago (
+    id bigint NOT NULL,
+    observacion character varying(255)
+);
+
+
+ALTER TABLE ms_pago.medio_pago OWNER TO dan_ms_user;
+
+--
+-- Name: pago; Type: TABLE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pago.pago (
+    id bigint NOT NULL,
+    fecha_pago timestamp without time zone,
+    id_cliente bigint,
+    id_medio bigint
+);
+
+
+ALTER TABLE ms_pago.pago OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_medio_pago; Type: SEQUENCE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_pago.secuencia_medio_pago
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_pago.secuencia_medio_pago OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_pago; Type: SEQUENCE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_pago.secuencia_pago
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_pago.secuencia_pago OWNER TO dan_ms_user;
+
+--
+-- Name: transferencia; Type: TABLE; Schema: ms_pago; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pago.transferencia (
+    cbu_destino character varying(255),
+    cbu_origen character varying(255),
+    codigo_transferencia bigint,
+    id bigint NOT NULL
+);
+
+
+ALTER TABLE ms_pago.transferencia OWNER TO dan_ms_user;
+
+--
+-- Name: detalle_pedido; Type: TABLE; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pedido.detalle_pedido (
+    id bigint NOT NULL,
+    cantidad numeric(19,2),
+    precio numeric(19,2),
+    id_material bigint,
+    id_pedido integer
+);
+
+
+ALTER TABLE ms_pedido.detalle_pedido OWNER TO dan_ms_user;
+
+--
+-- Name: estado_pedido; Type: TABLE; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pedido.estado_pedido (
+    id bigint NOT NULL,
+    estado character varying(255)
+);
+
+
+ALTER TABLE ms_pedido.estado_pedido OWNER TO dan_ms_user;
+
+--
+-- Name: pedido; Type: TABLE; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_pedido.pedido (
+    id integer NOT NULL,
+    fecha_envio timestamp without time zone,
+    fecha_pedido timestamp without time zone,
+    id_estado bigint,
+    id_obra bigint
+);
+
+
+ALTER TABLE ms_pedido.pedido OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_detalle_pedido; Type: SEQUENCE; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_pedido.secuencia_detalle_pedido
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_pedido.secuencia_detalle_pedido OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_pedido; Type: SEQUENCE; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_pedido.secuencia_pedido
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_pedido.secuencia_pedido OWNER TO dan_ms_user;
+
+--
+-- Name: cliente; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.cliente (
+    id bigint NOT NULL,
+    cuit character varying(255),
+    email character varying(255),
+    fecha_baja timestamp without time zone,
+    habilitado_online boolean,
+    maximo_cuenta_corriente numeric(19,2),
+    razon_social character varying(255),
+    id_usuario bigint
+);
+
+
+ALTER TABLE ms_usuario.cliente OWNER TO dan_ms_user;
+
+--
+-- Name: empleado; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.empleado (
+    id bigint NOT NULL,
+    apellido character varying(255),
+    email character varying(255),
+    nombre character varying(255),
+    id_usuario bigint
+);
+
+
+ALTER TABLE ms_usuario.empleado OWNER TO dan_ms_user;
+
+--
+-- Name: obra; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.obra (
+    id bigint NOT NULL,
+    descripcion character varying(255),
+    direccion character varying(255),
+    latitud numeric(19,2),
+    longitud numeric(19,2),
+    superficie numeric(19,2),
+    id_cliente bigint,
+    id_tipo_obra bigint
+);
+
+
+ALTER TABLE ms_usuario.obra OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_cliente; Type: SEQUENCE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_usuario.secuencia_cliente
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_usuario.secuencia_cliente OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_empleado; Type: SEQUENCE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_usuario.secuencia_empleado
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_usuario.secuencia_empleado OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_obra; Type: SEQUENCE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_usuario.secuencia_obra
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_usuario.secuencia_obra OWNER TO dan_ms_user;
+
+--
+-- Name: secuencia_usuario; Type: SEQUENCE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE SEQUENCE ms_usuario.secuencia_usuario
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ms_usuario.secuencia_usuario OWNER TO dan_ms_user;
+
+--
+-- Name: tipo_obra; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.tipo_obra (
+    id bigint NOT NULL,
+    tipo character varying(255)
+);
+
+
+ALTER TABLE ms_usuario.tipo_obra OWNER TO dan_ms_user;
+
+--
+-- Name: tipo_usuario; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.tipo_usuario (
+    id bigint NOT NULL,
+    tipo character varying(255)
+);
+
+
+ALTER TABLE ms_usuario.tipo_usuario OWNER TO dan_ms_user;
+
+--
+-- Name: usuario; Type: TABLE; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+CREATE TABLE ms_usuario.usuario (
+    id bigint NOT NULL,
+    clave character varying(255),
+    nombre character varying(255),
+    id_tipo_usuario bigint
+);
+
+
+ALTER TABLE ms_usuario.usuario OWNER TO dan_ms_user;
+
+--
+-- Data for Name: detalle_provision; Type: TABLE DATA; Schema: ms_material; Owner: dan_ms_user
+--
+
+COPY ms_material.detalle_provision (id, cantidad, id_material, id_provision) FROM stdin;
+\.
+
+
+--
+-- Data for Name: material; Type: TABLE DATA; Schema: ms_material; Owner: dan_ms_user
+--
+
+COPY ms_material.material (id, cantidad_minima, descripcion, descuento_cantidad, nombre, precio_unitario, stock_actual, stock_minimo, id_unidad) FROM stdin;
+\.
+
+
+--
+-- Data for Name: movimiento_stock; Type: TABLE DATA; Schema: ms_material; Owner: dan_ms_user
+--
+
+COPY ms_material.movimiento_stock (id, cantidad_entrada, cantidad_salida, fecha, id_detalle_pedido, id_detalle_provision, id_material) FROM stdin;
+\.
+
+
+--
+-- Data for Name: provision; Type: TABLE DATA; Schema: ms_material; Owner: dan_ms_user
+--
+
+COPY ms_material.provision (id, fecha_provision) FROM stdin;
+\.
+
+
+--
+-- Data for Name: unidad; Type: TABLE DATA; Schema: ms_material; Owner: dan_ms_user
+--
+
+COPY ms_material.unidad (id, descripcion) FROM stdin;
+1	Unidad
+2	kg
+3	m
+4	l
+\.
+
+
+--
+-- Data for Name: cheque; Type: TABLE DATA; Schema: ms_pago; Owner: dan_ms_user
+--
+
+COPY ms_pago.cheque (banco, fecha_cobro, numero_cheque, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: efectivo; Type: TABLE DATA; Schema: ms_pago; Owner: dan_ms_user
+--
+
+COPY ms_pago.efectivo (numero_recibo, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: medio_pago; Type: TABLE DATA; Schema: ms_pago; Owner: dan_ms_user
+--
+
+COPY ms_pago.medio_pago (id, observacion) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pago; Type: TABLE DATA; Schema: ms_pago; Owner: dan_ms_user
+--
+
+COPY ms_pago.pago (id, fecha_pago, id_cliente, id_medio) FROM stdin;
+\.
+
+
+--
+-- Data for Name: transferencia; Type: TABLE DATA; Schema: ms_pago; Owner: dan_ms_user
+--
+
+COPY ms_pago.transferencia (cbu_destino, cbu_origen, codigo_transferencia, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: detalle_pedido; Type: TABLE DATA; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+COPY ms_pedido.detalle_pedido (id, cantidad, precio, id_material, id_pedido) FROM stdin;
+\.
+
+
+--
+-- Data for Name: estado_pedido; Type: TABLE DATA; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+COPY ms_pedido.estado_pedido (id, estado) FROM stdin;
+1	Nuevo
+2	Confirmado
+3	Pendiente
+4	Cancelado
+5	Aceptado
+6	Rechazado
+7	En Preparación
+8	Entregado
+\.
+
+
+--
+-- Data for Name: pedido; Type: TABLE DATA; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+COPY ms_pedido.pedido (id, fecha_envio, fecha_pedido, id_estado, id_obra) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cliente; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.cliente (id, cuit, email, fecha_baja, habilitado_online, maximo_cuenta_corriente, razon_social, id_usuario) FROM stdin;
+\.
+
+
+--
+-- Data for Name: empleado; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.empleado (id, apellido, email, nombre, id_usuario) FROM stdin;
+\.
+
+
+--
+-- Data for Name: obra; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.obra (id, descripcion, direccion, latitud, longitud, superficie, id_cliente, id_tipo_obra) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tipo_obra; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.tipo_obra (id, tipo) FROM stdin;
+1	Reforma
+2	Casa
+3	Edificio
+4	Vial
+\.
+
+
+--
+-- Data for Name: tipo_usuario; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.tipo_usuario (id, tipo) FROM stdin;
+1	Cliente
+2	Vendedor
+\.
+
+
+--
+-- Data for Name: usuario; Type: TABLE DATA; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+COPY ms_usuario.usuario (id, clave, nombre, id_tipo_usuario) FROM stdin;
+\.
+
+
+--
+-- Name: secuencia_detalle_provision; Type: SEQUENCE SET; Schema: ms_material; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_material.secuencia_detalle_provision', 1, false);
+
+
+--
+-- Name: secuencia_material; Type: SEQUENCE SET; Schema: ms_material; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_material.secuencia_material', 1, false);
+
+
+--
+-- Name: secuencia_movimiento_stock; Type: SEQUENCE SET; Schema: ms_material; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_material.secuencia_movimiento_stock', 1, false);
+
+
+--
+-- Name: secuencia_provision; Type: SEQUENCE SET; Schema: ms_material; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_material.secuencia_provision', 1, false);
+
+
+--
+-- Name: secuencia_medio_pago; Type: SEQUENCE SET; Schema: ms_pago; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_pago.secuencia_medio_pago', 1, false);
+
+
+--
+-- Name: secuencia_pago; Type: SEQUENCE SET; Schema: ms_pago; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_pago.secuencia_pago', 1, false);
+
+
+--
+-- Name: secuencia_detalle_pedido; Type: SEQUENCE SET; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_pedido.secuencia_detalle_pedido', 1, false);
+
+
+--
+-- Name: secuencia_pedido; Type: SEQUENCE SET; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_pedido.secuencia_pedido', 1, false);
+
+
+--
+-- Name: secuencia_cliente; Type: SEQUENCE SET; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_usuario.secuencia_cliente', 1, false);
+
+
+--
+-- Name: secuencia_empleado; Type: SEQUENCE SET; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_usuario.secuencia_empleado', 1, false);
+
+
+--
+-- Name: secuencia_obra; Type: SEQUENCE SET; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_usuario.secuencia_obra', 1, false);
+
+
+--
+-- Name: secuencia_usuario; Type: SEQUENCE SET; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+SELECT pg_catalog.setval('ms_usuario.secuencia_usuario', 1, false);
+
+
+--
+-- Name: detalle_provision detalle_provision_pkey; Type: CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.detalle_provision
+    ADD CONSTRAINT detalle_provision_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: material material_pkey; Type: CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.material
+    ADD CONSTRAINT material_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: movimiento_stock movimiento_stock_pkey; Type: CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.movimiento_stock
+    ADD CONSTRAINT movimiento_stock_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: provision provision_pkey; Type: CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.provision
+    ADD CONSTRAINT provision_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: unidad unidad_pkey; Type: CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.unidad
+    ADD CONSTRAINT unidad_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cheque cheque_pkey; Type: CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.cheque
+    ADD CONSTRAINT cheque_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: efectivo efectivo_pkey; Type: CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.efectivo
+    ADD CONSTRAINT efectivo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: medio_pago medio_pago_pkey; Type: CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.medio_pago
+    ADD CONSTRAINT medio_pago_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pago pago_pkey; Type: CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.pago
+    ADD CONSTRAINT pago_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: transferencia transferencia_pkey; Type: CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.transferencia
+    ADD CONSTRAINT transferencia_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: detalle_pedido detalle_pedido_pkey; Type: CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.detalle_pedido
+    ADD CONSTRAINT detalle_pedido_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: estado_pedido estado_pedido_pkey; Type: CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.estado_pedido
+    ADD CONSTRAINT estado_pedido_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pedido pedido_pkey; Type: CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.pedido
+    ADD CONSTRAINT pedido_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cliente cliente_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.cliente
+    ADD CONSTRAINT cliente_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: empleado empleado_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.empleado
+    ADD CONSTRAINT empleado_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra obra_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.obra
+    ADD CONSTRAINT obra_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tipo_obra tipo_obra_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.tipo_obra
+    ADD CONSTRAINT tipo_obra_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tipo_usuario tipo_usuario_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.tipo_usuario
+    ADD CONSTRAINT tipo_usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.usuario
+    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: detalle_provision fk_detalle_provision_id_material_to_material_id; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.detalle_provision
+    ADD CONSTRAINT fk_detalle_provision_id_material_to_material_id FOREIGN KEY (id_material) REFERENCES ms_material.material(id);
+
+
+--
+-- Name: detalle_provision fk_detalle_provision_id_provision_to_provision_id; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.detalle_provision
+    ADD CONSTRAINT fk_detalle_provision_id_provision_to_provision_id FOREIGN KEY (id_provision) REFERENCES ms_material.provision(id);
+
+
+--
+-- Name: material fk_material_id_unidad_to_unidad_id; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.material
+    ADD CONSTRAINT fk_material_id_unidad_to_unidad_id FOREIGN KEY (id_unidad) REFERENCES ms_material.unidad(id);
+
+
+--
+-- Name: movimiento_stock fk_movimiento_stock_id_detalle_pedido_to_detalle_pedido_id; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.movimiento_stock
+    ADD CONSTRAINT fk_movimiento_stock_id_detalle_pedido_to_detalle_pedido_id FOREIGN KEY (id_detalle_pedido) REFERENCES ms_pedido.detalle_pedido(id);
+
+
+--
+-- Name: movimiento_stock fk_movimiento_stock_id_detalle_provision_to_detalle_provision_i; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.movimiento_stock
+    ADD CONSTRAINT fk_movimiento_stock_id_detalle_provision_to_detalle_provision_i FOREIGN KEY (id_detalle_provision) REFERENCES ms_material.detalle_provision(id);
+
+
+--
+-- Name: movimiento_stock fk_movimiento_stock_id_material_to_material_id; Type: FK CONSTRAINT; Schema: ms_material; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_material.movimiento_stock
+    ADD CONSTRAINT fk_movimiento_stock_id_material_to_material_id FOREIGN KEY (id_material) REFERENCES ms_material.material(id);
+
+
+--
+-- Name: cheque fk_cheque_id_to_medio_pago_id; Type: FK CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.cheque
+    ADD CONSTRAINT fk_cheque_id_to_medio_pago_id FOREIGN KEY (id) REFERENCES ms_pago.medio_pago(id);
+
+
+--
+-- Name: efectivo fk_efectivo_id_to_medio_pago_id; Type: FK CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.efectivo
+    ADD CONSTRAINT fk_efectivo_id_to_medio_pago_id FOREIGN KEY (id) REFERENCES ms_pago.medio_pago(id);
+
+
+--
+-- Name: pago fk_pago_id_cliente_cliente_id; Type: FK CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.pago
+    ADD CONSTRAINT fk_pago_id_cliente_cliente_id FOREIGN KEY (id_cliente) REFERENCES ms_usuario.cliente(id);
+
+
+--
+-- Name: pago fk_pago_id_medio_medio_pago_id; Type: FK CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.pago
+    ADD CONSTRAINT fk_pago_id_medio_medio_pago_id FOREIGN KEY (id_medio) REFERENCES ms_pago.medio_pago(id);
+
+
+--
+-- Name: transferencia fk_transferencia_id_to_medio_pago_id; Type: FK CONSTRAINT; Schema: ms_pago; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pago.transferencia
+    ADD CONSTRAINT fk_transferencia_id_to_medio_pago_id FOREIGN KEY (id) REFERENCES ms_pago.medio_pago(id);
+
+
+--
+-- Name: detalle_pedido fk_detalle_pedido_id_material_material_id; Type: FK CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.detalle_pedido
+    ADD CONSTRAINT fk_detalle_pedido_id_material_material_id FOREIGN KEY (id_material) REFERENCES ms_material.material(id);
+
+
+--
+-- Name: detalle_pedido fk_detalle_pedido_id_pedido_to_pedido_id; Type: FK CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.detalle_pedido
+    ADD CONSTRAINT fk_detalle_pedido_id_pedido_to_pedido_id FOREIGN KEY (id_pedido) REFERENCES ms_pedido.pedido(id);
+
+
+--
+-- Name: pedido fk_pedido_id_estado_estado_pedido_id; Type: FK CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.pedido
+    ADD CONSTRAINT fk_pedido_id_estado_estado_pedido_id FOREIGN KEY (id_estado) REFERENCES ms_pedido.estado_pedido(id);
+
+
+--
+-- Name: pedido fk_pedido_id_obra_obra_id; Type: FK CONSTRAINT; Schema: ms_pedido; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_pedido.pedido
+    ADD CONSTRAINT fk_pedido_id_obra_obra_id FOREIGN KEY (id_obra) REFERENCES ms_usuario.obra(id);
+
+
+--
+-- Name: cliente fk_cliente_id_usuario_to_usuario_id; Type: FK CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.cliente
+    ADD CONSTRAINT fk_cliente_id_usuario_to_usuario_id FOREIGN KEY (id_usuario) REFERENCES ms_usuario.usuario(id);
+
+
+--
+-- Name: empleado fk_empleado_id_usuario_to_usuario_id; Type: FK CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.empleado
+    ADD CONSTRAINT fk_empleado_id_usuario_to_usuario_id FOREIGN KEY (id_usuario) REFERENCES ms_usuario.usuario(id);
+
+
+--
+-- Name: obra fk_obra_id_cliente_to_cliente_id; Type: FK CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.obra
+    ADD CONSTRAINT fk_obra_id_cliente_to_cliente_id FOREIGN KEY (id_cliente) REFERENCES ms_usuario.cliente(id);
+
+
+--
+-- Name: obra fk_obra_id_tipo_obra_to_tipo_obra_id; Type: FK CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.obra
+    ADD CONSTRAINT fk_obra_id_tipo_obra_to_tipo_obra_id FOREIGN KEY (id_tipo_obra) REFERENCES ms_usuario.tipo_obra(id);
+
+
+--
+-- Name: usuario fk_usuario_id_tipo_usuario_tipo_usuario_id; Type: FK CONSTRAINT; Schema: ms_usuario; Owner: dan_ms_user
+--
+
+ALTER TABLE ONLY ms_usuario.usuario
+    ADD CONSTRAINT fk_usuario_id_tipo_usuario_tipo_usuario_id FOREIGN KEY (id_tipo_usuario) REFERENCES ms_usuario.tipo_usuario(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

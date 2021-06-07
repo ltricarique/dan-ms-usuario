@@ -1,7 +1,5 @@
 package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.utn.frsf.isi.dan.usuario.exception.ArgumentoIlegalException;
-import ar.edu.utn.frsf.isi.dan.usuario.exception.OperacionNoPermitidaException;
 import ar.edu.utn.frsf.isi.dan.usuario.exception.RecursoNoEncontradoException;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Cliente;
 import ar.edu.utn.frsf.isi.dan.usuario.service.ClienteService;
@@ -43,6 +40,7 @@ public class ClienteRest
 	@GetMapping(path = Api.CLIENTE_GET_CUIT_PATH)
 	@Operation(summary = "Retorna un cliente por cuit.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Cliente recuperado"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
 	public ResponseEntity<?> obtenerPorCuit(@Parameter(description = "Cuit del cliente a retornar") @PathVariable String cuit)
@@ -51,9 +49,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.obtenerClientePorCuit(cuit));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -64,6 +66,7 @@ public class ClienteRest
 	@GetMapping
 	@Operation(summary = "Retorna los clientes por razón social.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Clientes recuperados"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
 	public ResponseEntity<?> obtenerPorRazonSocial(
@@ -73,9 +76,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.obtenerClientePorRazonSocial(razonSocial));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -86,6 +93,7 @@ public class ClienteRest
 	@GetMapping(path = Api.CLIENTE_GET_OBRA_PATH)
 	@Operation(summary = "Retorna los clientes por su obra.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Clientes recuperados"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
 	public ResponseEntity<?> obtenerPorObra(@Parameter(description = "Id obra del cliente") @PathVariable() Long id)
@@ -94,9 +102,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.obtenerClientePorObra(id));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -116,9 +128,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.guardarCliente(cliente));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException | OperacionNoPermitidaException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -139,9 +155,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.actualizarCliente(cliente, id));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -152,6 +172,7 @@ public class ClienteRest
 	@DeleteMapping(value = Api.CLIENTE_DELETE_ID_PATH)
 	@Operation(summary = "Elimina un cliente.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Cliente eliminado"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
 	public ResponseEntity<?> eliminar(@Parameter(description = "Id del cliente a eliminar") @PathVariable Long id)
@@ -160,9 +181,13 @@ public class ClienteRest
 		{
 			return ResponseEntity.ok(clienteService.bajaCliente(id));
 		}
-		catch (RecursoNoEncontradoException | ArgumentoIlegalException e)
+		catch (ArgumentoIlegalException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -173,10 +198,26 @@ public class ClienteRest
 	@GetMapping(path = Api.CLIENTE_GET_ALL_PATH)
 	@Operation(summary = "Retorna todos los clientes registrados.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Clientes registrados"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "No existen clientes registrados") })
-	public ResponseEntity<List<Cliente>> listar()
+	public ResponseEntity<?> listar()
 	{
-		return ResponseEntity.ok(clienteService.listarClientes());
+		try
+		{
+			return ResponseEntity.ok(clienteService.listarClientes());
+		}
+		catch (ArgumentoIlegalException e)
+		{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
 	}
 }
