@@ -8,6 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
 
+/**
+ * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
+ *
+ */
 @Repository
 public interface ObraRepository extends JpaRepository<Obra, Long>
 {

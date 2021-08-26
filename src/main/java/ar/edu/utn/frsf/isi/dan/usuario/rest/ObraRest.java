@@ -1,8 +1,11 @@
 package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,16 +29,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
  *
  */
 @RestController
+//@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 @RequestMapping(Api.OBRA_BASE_PATH)
+@CrossOrigin
 @Tag(name = "ObraRest", description = "Permite gestionar las obras de los clientes de la empresa.")
 public class ObraRest
 {
 	@Autowired
 	private ObraService obraService;
 
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@PostMapping(value = Api.OBRA_POST_ID_PATH)
 	@Operation(summary = "Registra una nueva obra a un cliente.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Obra registrada correctamente"),
@@ -63,6 +70,7 @@ public class ObraRest
 		}
 	}
 
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@PutMapping(value = Api.OBRA_PUT_ID_PATH)
 	@Operation(summary = "Actualiza una obra.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Obra actualizada"),
@@ -90,6 +98,7 @@ public class ObraRest
 		}
 	}
 
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@DeleteMapping(value = Api.OBRA_DELETE_ID_PATH)
 	@Operation(summary = "Elimina una obra.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Obra eliminada"),
@@ -116,6 +125,7 @@ public class ObraRest
 		}
 	}
 
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@GetMapping(path = Api.OBRA_GET_ID_PATH)
 	@Operation(summary = "Retorna una obra por id.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Obra recuperada"),
@@ -142,6 +152,7 @@ public class ObraRest
 		}
 	}
 
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@GetMapping(path = Api.OBRA_GET_CLIENTE_PATH)
 	@Operation(summary = "Retorna las obras por cliente y/o tipo de obra.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Obras recuperadas"),
@@ -167,6 +178,16 @@ public class ObraRest
 		{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+
+	@GetMapping(path = "/instancia")
+	@Operation(summary = "Retorna información de la instancia.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Información de la instancia"),
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Recurso no encontrado") })
+	public ResponseEntity<?> instancia()
+	{
+		return ResponseEntity.ok("dan-ms-usuario -> [OK]");
 	}
 
 }

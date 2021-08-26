@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
  *
  */
 @Entity

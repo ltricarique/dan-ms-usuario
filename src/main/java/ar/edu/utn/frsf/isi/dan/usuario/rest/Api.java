@@ -2,6 +2,7 @@ package ar.edu.utn.frsf.isi.dan.usuario.rest;
 
 /**
  * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
  *
  */
 interface Api

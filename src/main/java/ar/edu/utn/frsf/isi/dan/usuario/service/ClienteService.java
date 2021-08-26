@@ -4,6 +4,11 @@ import java.util.List;
 
 import ar.edu.utn.frsf.isi.dan.usuario.model.Cliente;
 
+/**
+ * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
+ *
+ */
 public interface ClienteService
 {
 	Cliente guardarCliente(Cliente cliente);

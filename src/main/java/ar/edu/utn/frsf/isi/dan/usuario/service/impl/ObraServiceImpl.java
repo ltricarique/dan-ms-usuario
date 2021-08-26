@@ -16,6 +16,11 @@ import ar.edu.utn.frsf.isi.dan.usuario.repository.ObraRepository;
 import ar.edu.utn.frsf.isi.dan.usuario.service.ClienteService;
 import ar.edu.utn.frsf.isi.dan.usuario.service.ObraService;
 
+/**
+ * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
+ *
+ */
 @Service
 public class ObraServiceImpl implements ObraService
 {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +25,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
  *
  */
 @RestController
+//@RolesAllowed(Role.EMPLEADO)
 @RequestMapping(Api.EMPLEADO_BASE_PATH)
+@CrossOrigin
 @Tag(name = "EmpleadoRest", description = "Permite gestionar los empleados de la empresa.")
 public class EmpleadoRest
 {
@@ -38,7 +42,7 @@ public class EmpleadoRest
 	@Operation(summary = "Registra un nuevo empleado.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleado registrado correctamente"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"), })
-	public ResponseEntity<Empleado> crear(@RequestBody Empleado empleado)
+	public ResponseEntity<Empleado> registrar(@RequestBody Empleado empleado)
 	{
 		empleado.setId(SEQUENCE++);
 		EMPLEADOS.add(empleado);
@@ -113,11 +117,18 @@ public class EmpleadoRest
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Empleados recuperados"),
 		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
 		@ApiResponse(responseCode = "404", description = "No existen empleados registrados") })
-	public ResponseEntity<List<Empleado>> listar()
+	public ResponseEntity<?> listar()
 	{
-		if (!EMPLEADOS.isEmpty())
-			return ResponseEntity.ok(EMPLEADOS);
-		else
-			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok("[implementar]");
+	}
+
+	@GetMapping(path = "/instancia")
+	@Operation(summary = "Retorna información de la instancia.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Información de la instancia"),
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Recurso no encontrado") })
+	public ResponseEntity<?> instancia()
+	{
+		return ResponseEntity.ok("dan-ms-usuario -> [OK]");
 	}
 }

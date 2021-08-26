@@ -15,6 +15,11 @@ import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
 import ar.edu.utn.frsf.isi.dan.usuario.repository.ClienteRepository;
 import ar.edu.utn.frsf.isi.dan.usuario.service.ClienteService;
 
+/**
+ * @author Leandro Heraldo Tricarique
+ * @author Francisco Tomas Gautero
+ *
+ */
 @Service
 public class ClienteServiceImpl implements ClienteService
 {
