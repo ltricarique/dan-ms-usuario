@@ -3,6 +3,8 @@ package ar.edu.utn.frsf.isi.dan.usuario.rest;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "ClienteRest", description = "Permite gestionar los clientes de la empresa.")
 public class ClienteRest
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClienteRest.class);
+
 	@Autowired
 	private ClienteService clienteService;
 
@@ -131,6 +135,33 @@ public class ClienteRest
 	}
 
 	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
+	@GetMapping(path = Api.CLIENTE_GET_USUARIO_PATH)
+	@Operation(summary = "Retorna un cliente por cuit.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Cliente recuperado"),
+		@ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+		@ApiResponse(responseCode = "401", description = "No autorizado"), @ApiResponse(responseCode = "403", description = "Prohibido"),
+		@ApiResponse(responseCode = "404", description = "Cliente inexistente") })
+	public ResponseEntity<?> obtenerPorUsuario(@Parameter(description = "Nombre del cliente a retornar") @PathVariable String cuit)
+	{
+		try
+		{
+			return ResponseEntity.ok(clienteService.obtenerClientePorCuit(cuit));
+		}
+		catch (ArgumentoIlegalException e)
+		{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+		catch (RecursoNoEncontradoException e)
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@RolesAllowed(value = { Role.EMPLEADO, Role.CLIENTE })
 	@PostMapping
 	@Operation(summary = "Registra un nuevo cliente.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Cliente registrado correctamente"),
@@ -145,14 +176,20 @@ public class ClienteRest
 		}
 		catch (ArgumentoIlegalException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 		catch (RecursoNoEncontradoException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
@@ -173,14 +210,20 @@ public class ClienteRest
 		}
 		catch (ArgumentoIlegalException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 		catch (RecursoNoEncontradoException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
@@ -200,14 +243,20 @@ public class ClienteRest
 		}
 		catch (ArgumentoIlegalException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 		catch (RecursoNoEncontradoException e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error", e);
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}

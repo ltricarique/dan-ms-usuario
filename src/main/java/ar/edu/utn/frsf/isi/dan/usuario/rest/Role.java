@@ -5,7 +5,7 @@ package ar.edu.utn.frsf.isi.dan.usuario.rest;
  * @author Francisco Tomas Gautero
  *
  */
-interface Role
+public interface Role
 {
 	String EMPLEADO = "empleado";
 	String CLIENTE = "cliente";

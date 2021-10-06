@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.edu.utn.frsf.isi.dan.usuario.exception.ArgumentoIlegalException;
+import ar.edu.utn.frsf.isi.dan.usuario.exception.ErrorInternoException;
 import ar.edu.utn.frsf.isi.dan.usuario.exception.RecursoNoEncontradoException;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Cliente;
 import ar.edu.utn.frsf.isi.dan.usuario.model.Obra;
+import ar.edu.utn.frsf.isi.dan.usuario.model.Usuario;
 import ar.edu.utn.frsf.isi.dan.usuario.repository.ClienteRepository;
 import ar.edu.utn.frsf.isi.dan.usuario.service.ClienteService;
+import ar.edu.utn.frsf.isi.dan.usuario.service.KeycloakService;
 
 /**
  * @author Leandro Heraldo Tricarique
@@ -24,6 +27,9 @@ import ar.edu.utn.frsf.isi.dan.usuario.service.ClienteService;
 public class ClienteServiceImpl implements ClienteService
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClienteServiceImpl.class);
+
+	@Autowired
+	private KeycloakService keycloakService;
 
 	@Autowired
 	private ClienteRepository clienteRepository;
@@ -66,6 +72,11 @@ public class ClienteServiceImpl implements ClienteService
 			throw new ArgumentoIlegalException("No existe usuario.");
 		}
 
+		Usuario usuario = keycloakService.guardarUsuario(cliente);
+
+		if (usuario == null)
+			throw new ErrorInternoException("Error a persistir el usuario.");
+
 		cliente = clienteRepository.save(cliente);
 		LOGGER.info("Cliente guardado");
 
@@ -96,13 +107,16 @@ public class ClienteServiceImpl implements ClienteService
 
 		if (clienteRepository.canDelete(id))
 		{
+			Cliente cliente = clienteRepository.findById(id).get();
 			clienteRepository.deleteById(id);
+			keycloakService.eliminarUsuario(cliente.getUsuario());
 		}
 		else
 		{
 			Cliente cliente = clienteRepository.findByIdAndFechaBajaIsNull(id).get();
 			cliente.setFechaBaja(Instant.now());
 			cliente = clienteRepository.save(cliente);
+			keycloakService.bajaUsuario(cliente.getUsuario());
 		}
 
 		LOGGER.info("Cliente dado de baja");

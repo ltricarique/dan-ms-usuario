@@ -11,6 +11,7 @@ interface Api
 
 	String CLIENTE_BASE_PATH = BASE_PATH + "/cliente";
 	String CLIENTE_GET_CUIT_PATH = "/{cuit}";
+	String CLIENTE_GET_USUARIO_PATH = "/usuario/{usuario}";
 	String CLIENTE_GET_ALL_PATH = "/listar";
 	String CLIENTE_GET_OBRA_PATH = "/obra/{id}";
 	String CLIENTE_PUT_ID_PATH = "/{id}";
